@@ -1,0 +1,1304 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0611" />
+  <title>💌 Валентинка для Нуры</title>
+
+  <style>
+    :root{
+      --bg0:#07040c;
+      --bg1:#140a22;
+      --card:rgba(255,255,255,.08);
+      --card2:rgba(255,255,255,.06);
+      --stroke:rgba(255,255,255,.14);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.72);
+      --hot:#ff2e73;
+      --hot2:#ff5aa0;
+      --mint:#6ef7d3;
+      --gold:#ffd27a;
+      --shadow: 0 24px 70px rgba(0,0,0,.55);
+      --shadow2: 0 12px 30px rgba(0,0,0,.35);
+      --r: 18px;
+      --r2: 26px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bot: env(safe-area-inset-bottom, 0px);
+      --vh: 1vh;
+      --blur: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(1200px 900px at 20% 0%, rgba(255,46,115,.20) 0%, rgba(255,46,115,0) 60%),
+        radial-gradient(1000px 800px at 90% 20%, rgba(110,247,211,.16) 0%, rgba(110,247,211,0) 55%),
+        radial-gradient(900px 700px at 60% 100%, rgba(255,210,122,.14) 0%, rgba(255,210,122,0) 55%),
+        linear-gradient(180deg, var(--bg1) 0%, var(--bg0) 100%);
+      overflow-x:hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* subtle noise */
+    body::before{
+      content:"";
+      position:fixed; inset:0;
+      pointer-events:none;
+      opacity:.05;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+    }
+
+    /* floating blobs */
+    .blob{
+      position:fixed;
+      width:320px; height:320px;
+      border-radius: 999px;
+      filter: blur(38px);
+      opacity:.18;
+      pointer-events:none;
+      transform: translate3d(0,0,0);
+      animation: blobFloat 14s ease-in-out infinite;
+    }
+    .blob.b1{ left:-90px; top: 80px; background: radial-gradient(circle at 30% 30%, rgba(255,46,115,1), rgba(255,46,115,0)); animation-duration: 16s; }
+    .blob.b2{ right:-120px; top: 160px; background: radial-gradient(circle at 30% 30%, rgba(110,247,211,1), rgba(110,247,211,0)); animation-duration: 18s; animation-delay:-6s;}
+    .blob.b3{ left:20px; bottom: -120px; background: radial-gradient(circle at 30% 30%, rgba(255,210,122,1), rgba(255,210,122,0)); animation-duration: 20s; animation-delay:-9s;}
+    @keyframes blobFloat{
+      0%,100%{ transform: translate3d(0,0,0) scale(1); }
+      50%{ transform: translate3d(14px,-18px,0) scale(1.08); }
+    }
+
+    /* canvas hearts */
+    canvas#hearts{
+      position:fixed; inset:0;
+      pointer-events:none;
+      z-index:0;
+      opacity:.95;
+    }
+
+    .app{
+      position:relative;
+      z-index:1;
+      min-height: calc(var(--vh) * 100);
+      padding: calc(16px + var(--safe-top)) 14px calc(18px + var(--safe-bot));
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 10px 10px;
+      border-radius: var(--r2);
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.05));
+      border: 1px solid var(--stroke);
+      backdrop-filter: blur(var(--blur));
+      box-shadow: var(--shadow2);
+      position:sticky;
+      top: calc(10px + var(--safe-top));
+      z-index: 4;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width: 0;
+    }
+    .mark{
+      width: 40px; height: 40px;
+      border-radius: 14px;
+      display:grid;
+      place-items:center;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.25), rgba(255,255,255,0) 60%),
+        linear-gradient(135deg, rgba(255,46,115,.95), rgba(110,247,211,.75));
+      box-shadow: 0 12px 30px rgba(255,46,115,.18);
+      border: 1px solid rgba(255,255,255,.22);
+      position:relative;
+      overflow:hidden;
+    }
+    .mark::after{
+      content:"";
+      position:absolute; inset:-40%;
+      background: conic-gradient(from 40deg, rgba(255,255,255,.0), rgba(255,255,255,.45), rgba(255,255,255,0));
+      animation: shine 3.8s linear infinite;
+      opacity:.55;
+    }
+    @keyframes shine { to{ transform: rotate(360deg); } }
+    .mark span{ font-size:18px; filter: drop-shadow(0 8px 18px rgba(0,0,0,.45)); position:relative; z-index:1;}
+
+    .brand .t{
+      display:flex; flex-direction:column;
+      line-height:1.05;
+      min-width:0;
+    }
+    .brand .t strong{
+      font-size: 13px;
+      letter-spacing:.3px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .brand .t small{
+      font-size: 11px;
+      color: var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .chip{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding: 9px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 10px 20px rgba(0,0,0,.18);
+      user-select:none;
+      min-width: 0;
+    }
+    .chip .dot{
+      width:8px; height:8px;
+      border-radius: 99px;
+      background: radial-gradient(circle at 30% 30%, var(--mint), rgba(110,247,211,.15));
+      box-shadow: 0 0 0 6px rgba(110,247,211,.08);
+      animation: pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse{
+      0%,100%{ transform: scale(1); opacity:1;}
+      50%{ transform: scale(1.2); opacity:.85;}
+    }
+    .chip span{
+      font-size: 12px;
+      color: var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 180px;
+    }
+
+    .stage{
+      position:relative;
+      border-radius: var(--r2);
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.05));
+      border: 1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(var(--blur));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      padding: 18px 14px 14px;
+    }
+    .stage::before{
+      content:"";
+      position:absolute; inset:-120px -120px auto auto;
+      width: 260px; height: 260px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,46,115,.35), rgba(255,46,115,0) 70%);
+      filter: blur(12px);
+      transform: rotate(10deg);
+    }
+    .stage::after{
+      content:"";
+      position:absolute; inset:auto auto -140px -130px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle at 30% 30%, rgba(110,247,211,.26), rgba(110,247,211,0) 70%);
+      filter: blur(12px);
+      transform: rotate(-10deg);
+    }
+
+    .step{
+      position:relative;
+      z-index:1;
+      display:none;
+      animation: stepIn .55s cubic-bezier(.2,.9,.2,1) both;
+    }
+    .step.active{ display:block; }
+    @keyframes stepIn{
+      from{ transform: translateY(10px) scale(.985); opacity:0; filter: blur(6px); }
+      to{ transform: translateY(0) scale(1); opacity:1; filter: blur(0); }
+    }
+
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.14);
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+    .kicker .mini{
+      width: 8px; height: 8px;
+      border-radius: 99px;
+      background: radial-gradient(circle at 30% 30%, var(--hot2), rgba(255,46,115,.1));
+      box-shadow: 0 0 0 6px rgba(255,46,115,.10);
+    }
+
+    h1{
+      margin: 0 0 8px;
+      font-size: 24px;
+      line-height:1.08;
+      letter-spacing:-.2px;
+    }
+    p{
+      margin:0 0 14px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      flex: 1 1 auto;
+      min-width: 120px;
+      border: 0;
+      border-radius: 999px;
+      padding: 13px 14px;
+      color: rgba(255,255,255,.95);
+      font-weight: 700;
+      letter-spacing:.2px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 14px 30px rgba(0,0,0,.22);
+      backdrop-filter: blur(12px);
+      transition: transform .12s ease, filter .12s ease, background .12s ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .btn:active{ transform: translateY(1px) scale(.99); }
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(255,46,115,.95), rgba(255,90,160,.86));
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: 0 18px 40px rgba(255,46,115,.22);
+    }
+    .btn.primary::before{
+      content:"";
+      position:absolute; inset:-60% -40%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), rgba(255,255,255,0) 55%);
+      transform: rotate(18deg);
+      opacity:.32;
+    }
+
+    .btn.secondary{
+      background: linear-gradient(135deg, rgba(255,255,255,.09), rgba(255,255,255,.05));
+    }
+    .btn.ghost{
+      background: rgba(255,255,255,.04);
+      border: 1px dashed rgba(255,255,255,.20);
+      color: rgba(255,255,255,.85);
+    }
+    .btn.small{
+      padding: 10px 12px;
+      font-size: 12px;
+      min-width:auto;
+      flex:0 0 auto;
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin: 10px 0 14px;
+    }
+    label{
+      font-size: 12px;
+      color: rgba(255,255,255,.85);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+    }
+    label small{ color: var(--muted); font-weight: 500; }
+    input[type="text"]{
+      width:100%;
+      padding: 14px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.92);
+      outline:none;
+      font-size: 14px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+    }
+    input[type="text"]::placeholder{ color: rgba(255,255,255,.45); }
+
+    .progress{
+      margin-top: 10px;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      z-index:1;
+    }
+    .p{
+      width: 10px; height: 10px;
+      border-radius: 99px;
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.18);
+      transition: transform .2s ease, background .2s ease, opacity .2s ease;
+      opacity:.7;
+    }
+    .p.on{
+      background: linear-gradient(135deg, rgba(255,46,115,.95), rgba(110,247,211,.75));
+      opacity:1;
+      transform: scale(1.25);
+      box-shadow: 0 0 0 6px rgba(255,46,115,.08);
+    }
+
+    /* Gallery */
+    .gallery{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top: 14px;
+    }
+    .ph{
+      aspect-ratio: 1 / 1.18;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.16);
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), rgba(255,255,255,0) 55%),
+        linear-gradient(135deg, rgba(255,46,115,.22), rgba(110,247,211,.14)),
+        rgba(0,0,0,.18);
+      overflow:hidden;
+      box-shadow: 0 18px 40px rgba(0,0,0,.28);
+      position:relative;
+      transform: translateZ(0);
+    }
+    .ph img{
+      width:100%; height:100%;
+      object-fit: cover;
+      display:block;
+      filter: saturate(1.04) contrast(1.02);
+      transform: scale(1.02);
+    }
+    .ph .tag{
+      position:absolute;
+      left: 10px; bottom: 10px;
+      padding: 7px 10px;
+      font-size: 12px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.35);
+      border: 1px solid rgba(255,255,255,.16);
+      color: rgba(255,255,255,.88);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 22px rgba(0,0,0,.22);
+    }
+    .ph::after{
+      content:"";
+      position:absolute; inset:-40%;
+      background: conic-gradient(from 60deg, rgba(255,255,255,0), rgba(255,255,255,.30), rgba(255,255,255,0));
+      opacity:.20;
+      animation: shine 6s linear infinite;
+      pointer-events:none;
+    }
+
+    .note{
+      margin-top: 12px;
+      padding: 12px 12px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.86);
+      font-size: 13px;
+      line-height:1.55;
+      box-shadow: 0 16px 38px rgba(0,0,0,.18);
+      position:relative;
+      overflow:hidden;
+    }
+    .note b{ color: rgba(255,255,255,.95); }
+    .note .spark{
+      position:absolute;
+      right: 10px; top: 10px;
+      font-size: 16px;
+      opacity:.9;
+      animation: twinkle 1.8s ease-in-out infinite;
+    }
+    @keyframes twinkle{ 0%,100%{ transform: rotate(0deg) scale(1); opacity:.85; } 50%{ transform: rotate(12deg) scale(1.08); opacity:1; } }
+
+    .divider{
+      height:1px;
+      background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.18), rgba(255,255,255,0));
+      margin: 14px 0;
+      opacity:.8;
+    }
+
+    /* Toast */
+    .toast{
+      position:fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: calc(18px + var(--safe-bot));
+      width: min(520px, calc(100% - 24px));
+      padding: 12px 12px;
+      border-radius: 18px;
+      background: rgba(12, 7, 18, .72);
+      border: 1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow2);
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      z-index: 10;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .2s ease, transform .2s ease;
+    }
+    .toast.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(-6px);
+    }
+    .toast .ico{
+      width: 34px; height: 34px;
+      border-radius: 14px;
+      display:grid;
+      place-items:center;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      flex:0 0 auto;
+    }
+    .toast .txt{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .toast .txt strong{ font-size: 12px; }
+    .toast .txt small{ font-size: 11px; color: var(--muted); line-height:1.35; }
+
+    /* modal */
+    .modal{
+      position:fixed; inset:0;
+      display:none;
+      z-index: 20;
+      padding: calc(16px + var(--safe-top)) 14px calc(16px + var(--safe-bot));
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+    }
+    .modal.show{ display:flex; }
+    .sheet{
+      margin:auto;
+      width: min(520px, 100%);
+      border-radius: 26px;
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border: 1px solid rgba(255,255,255,.16);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      transform: translateY(10px);
+      opacity:0;
+      animation: sheetIn .28s ease forwards;
+    }
+    @keyframes sheetIn{
+      to{ transform: translateY(0); opacity:1; }
+    }
+    .sheet header{
+      padding: 14px 14px 10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+    .sheet header strong{ font-size: 13px; letter-spacing:.2px; }
+    .sheet .body{
+      padding: 12px 14px 14px;
+    }
+    .sheet .body p{ margin-bottom: 10px; }
+    .sheet textarea{
+      width:100%;
+      min-height: 110px;
+      resize:none;
+      padding: 12px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.92);
+      outline:none;
+      font-size: 14px;
+      line-height:1.45;
+    }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce){
+      *{ animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior:auto !important; }
+      canvas#hearts{ display:none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+  <canvas id="hearts"></canvas>
+
+  <main class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="mark"><span>💗</span></div>
+        <div class="t">
+          <strong id="titleBar">Валентинка</strong>
+          <small id="subBar">D&N</small>
+        </div>
+      </div>
+      <div class="chip" id="chip">
+        <div class="dot"></div>
+        <span id="chipText">шаг 1 из 5</span>
+      </div>
+    </div>
+
+    <section class="stage" id="stage">
+
+      <!-- STEP 1 -->
+      <div class="step active" data-step="1">
+        <div class="kicker"><span class="mini"></span><span>Вход в квест</span></div>
+        <h1>D&N ✨</h1>
+        <p>
+          Это маленькая валентинка от <b>меня</b>.<br>
+          Для самой прекрасной и нежной девушки в моей жизни<br>
+          Для девушки, приходом которой изменилась моя жизнь. 
+        </p>
+        <div class="field">
+          <!-- <label>Как тебя зовут? <small>(можно мило)</small></label> -->
+          <input id="girlName" type="text" disabled value="Нура 💝" autocomplete="off" />
+        </div>
+
+        <div class="actions">
+          <button class="btn primary" id="startBtn">Начать</button>
+          <!-- <button class="btn ghost" id="skipNameBtn">Пропустить</button> -->
+        </div><br>
+
+        <div class="progress" aria-hidden="true">
+          <div class="p on"></div><div class="p"></div><div class="p"></div><div class="p"></div><div class="p"></div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step" data-step="2">
+        <div class="kicker"><span class="mini"></span><span>Твой код доступа</span></div>
+        <h1 id="step2Title">Здесь я собрал то, что я заметил, и твои хотелки за всё время нашего общения.</h1>
+        <p>
+          Жмякни на то что считаешь 10000%<br>
+          Я специально собрал варианты из того, что ты любишь 💫
+        </p>
+
+        <div class="actions">
+          <button class="btn secondary" data-ans="приготовлю тебе гречку">🥣 Гречка</button>
+          <button class="btn secondary" data-ans="приготовлю тебе курицу">🍗 Курица в кисло-сладком</button>
+          <button class="btn secondary" data-ans="нарисую тебя">🎨 Рисовать / искусство руками</button>
+          <button class="btn secondary" data-ans="куплю что то леопардовое">🐆 Леопардовые оттенки</button>
+          <button class="btn secondary" data-ans="приготовлю кебаб">🥩 Любит кебаб</button>
+          <button class="btn secondary" data-ans="пошопимся">🛍 Любит шопится онлайн</button>
+        </div>
+
+        <div class="divider"></div>
+        <div class="actions">
+          <button class="btn ghost small" id="back2">← Назад</button>
+          <button class="btn primary" id="next2" disabled>Дальше</button>
+        </div>
+
+        <div class="progress" aria-hidden="true">
+          <div class="p"></div><div class="p on"></div><div class="p"></div><div class="p"></div><div class="p"></div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step" data-step="3">
+        <div class="kicker"><span class="mini"></span><span>Мини-миссия</span></div>
+        <h1>Сердце “наших планов”</h1>
+        <p>
+          Нажми на сердце, которое ощущается как “наш следующий шаг”.
+          (Подсказка: одно из них слегка дрожит 😉)
+        </p>
+
+        <div class="actions" id="heartsGrid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <button class="btn secondary" data-heart="A">💍 Свадьба</button>
+          <button class="btn secondary" data-heart="B" id="wobbleHeart">💗 2026 — встреча</button>
+          <button class="btn secondary" data-heart="C">💘 Романтический ужин</button>
+          <button class="btn secondary" data-heart="D">💝 Путешествия</button>
+        </div>
+
+        <div class="divider"></div>
+        <div class="actions">
+          <button class="btn ghost small" id="back3">← Назад</button>
+          <button class="btn primary" id="next3" disabled>Дальше</button>
+        </div>
+
+        <div class="progress" aria-hidden="true">
+          <div class="p"></div><div class="p"></div><div class="p on"></div><div class="p"></div><div class="p"></div>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="step" data-step="4">
+        <div class="kicker"><span class="mini"></span><span>Самая лучшая пара в мире</span></div>
+        <h1 style="text-align: center;">D 🤍 N</h1>
+        <p style="text-align: center;">
+          Да ты че ?<br>
+          Базару нет
+        </p>
+
+        <div class="gallery">
+          <div class="ph">
+            <img id="imgMe" alt="Фото Дастана" src="assets/me.jpg" />
+            <div class="tag">ЯЯЯЯ</div>
+          </div>
+          <div class="ph">
+            <img id="imgHer" alt="Фото Нуры" src="assets/her.jpg" />
+            <div class="tag" id="herTag">Жанымка</div>
+          </div>
+        </div>
+
+        <div class="note" id="interestsNote">
+          <span class="spark">✨</span>
+          <b>Твои коронные словечки:</b>
+          <span id="interestsInline"></span>
+        </div>
+
+        <div class="note" id="plansNote">
+          <span class="spark">🗺️</span>
+          <b>Общие планы:</b>
+          <div id="plansList" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;"></div>
+        </div>
+
+        <div class="note" id="quotesNote">
+          <span class="spark">💬</span>
+          <b>Наши цитаты:</b>
+          <div style="margin-top:8px;">
+            <div id="quoteBox" style="padding:10px 10px; border-radius:16px; background:rgba(0,0,0,.16); border:1px solid rgba(255,255,255,.12);">
+              <span id="quoteText"></span>
+            </div>
+            <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn secondary small" id="nextQuote">Ещё цитату</button>
+              <button class="btn ghost small" id="surprise">Нура а давай?</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="actions">
+          <button class="btn ghost small" id="back4">← Назад</button>
+          <button class="btn primary" id="next4">Финал</button>
+        </div>
+
+        <div class="progress" aria-hidden="true">
+          <div class="p"></div><div class="p"></div><div class="p"></div><div class="p on"></div><div class="p"></div>
+        </div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="step" data-step="5">
+        <div class="kicker"><span class="mini"></span><span>Главный вопрос</span></div>
+        <h1 id="finalTitle">Нура, будешь моей валентинкой? 💞</h1>
+        <p id="finalText">
+          «нам и целой жизни не хватит насладиться моментами друг с другом»
+        </p>
+
+        <div class="actions">
+          <button class="btn primary" id="yesBtn">ДА 💗</button>
+          <button class="btn secondary" id="maybeBtn">Эмм…</button>
+          <button class="btn ghost" id="noBtn">Нет</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="note" id="afterYes" style="display:none;">
+          <span class="spark">💫</span>
+          <b>Урааа, Нура.</b> Тогда закрепим маленький ритуал:
+          сегодня — чуть больше объятий, и один наш шаг к мечтам.
+          <br><br>
+          <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn secondary small" id="openMsg">Открыть тайное письмо</button>
+            <button class="btn ghost small" id="restart">Сыграть ещё раз</button>
+          </div>
+        </div>
+
+        <div class="progress" aria-hidden="true">
+          <div class="p"></div><div class="p"></div><div class="p"></div><div class="p"></div><div class="p on"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <div class="toast" id="toast">
+      <div class="ico">💌</div>
+      <div class="txt">
+        <strong id="toastTitle">Подсказка</strong>
+        <small id="toastText">…</small>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal" id="modal">
+    <div class="sheet" role="dialog" aria-modal="true" aria-label="Сообщение">
+      <header>
+        <strong>Тайное сообщение для Нуры</strong>
+        <button class="btn ghost small" id="closeModal">Закрыть</button>
+      </header>
+      <div class="body">
+        <p>Писало мое сердце. А не я XD</p>
+        <textarea id="msgArea" placeholder="Например: 'Спасибо, что ты есть. Я рядом.'"></textarea>
+        <div class="actions" style="margin-top:10px;">
+          <button class="btn primary" id="copyMsg">Скопировать</button>
+          <button class="btn secondary" id="shareMsg">Поделиться</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mobile vh fix
+    const setVh = () => document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+    setVh();
+    window.addEventListener('resize', setVh);
+
+    // ====== CONFIG ======
+    // 1) Положи фото в папку assets рядом с этим файлом:
+    //    assets/me.jpg  — фото Дастана
+    //    assets/her.jpg — фото Нуры
+    const CONFIG = {
+      yourName: "Дастан",
+      herName: "Нура 💝",
+
+      interests: [
+        "Малдасэ",
+        "Омничка",
+        "Мили",
+        "туууууффф"
+      ],
+
+      plans: [
+        "встретимся в 2026 году",
+        "свожу тебя в горы",
+        "Алмату покажуу",
+        "ты расскажешь мне историю России, про династии",
+        "романтический ужин с видом",
+        "я приеду Москву к тебе",
+        "накупим разные непонятные иностранные вкусняшки и снимем обзор на них",
+        "гастротур по Ташкенту",
+        "снимем рилс нашей истории, как у нас всё получилось",
+        "купим что-то парное (индивидуальное, не типичные вещи для парочек, а вложить свой смысл)",
+        "объездим ИК",
+        "устроим пикник в лесу и на пляже встретить закат",
+        "пообщаемся в живую: семейные ценности, быт, как мама/как папа, проработать эти моменты",
+        "посмотрим вместе фильмы (составим список)",
+        "подрифтим ночью"
+      ],
+
+      quotes: [
+        "«нам и целой жизни не хватит насладиться моментами друг с другом»",
+        "«для кого-то ты тот самый человек, с которым представляют сценарии перед сном»",
+        "«пусть ваше сердце будет спокойным,зная,что предназначенное для вас никогда не пройдёт мимо,а то,что прошло, не было вам предназначено»"
+      ],
+
+      compliments: [
+        "Ты — мой самый осознанный выбор. 🤍",
+        "С тобой у меня внутри спокойно.",
+        "Ты красивая. Очень. (и это факт который нельзя отрицать)",
+        "Ты умеешь делать мир ярче.",
+        "Твой вкус — это отдельное искусство.",
+        "Обожаю твех смех"
+      ],
+
+      noRunTexts: [
+        "Ой, кажется, эта кнопка стесняется 😅",
+        "Нет-нет, не сюда… попробуй ещё раз 🙈",
+        "Она убежала. Как мои мысли, когда ты рядом 🫠",
+        "Подозрительно… попробуй нажать ДА 💗"
+      ],
+
+      maybeTexts: [
+        "Ммм… я поставлю это как ‘ДА, но я стесняюсь’ 😌",
+        "Считаю, что это ‘ДА’, просто с паузой 😉",
+        "Окей. Давай так: ты нажимаешь ‘ДА’, а я улыбаюсь"
+      ]
+    };
+
+    // ====== UI HELPERS ======
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+    const state = {
+      step: 1,
+      girlName: CONFIG.herName,
+      secret: "",
+      heart: "",
+      accepted: false,
+      quoteIndex: 0
+    };
+
+    const titleBar = $("#titleBar");
+    const subBar = $("#subBar");
+    const chipText = $("#chipText");
+
+    function toast(title, text, ico="💌"){
+      const t = $("#toast");
+      $("#toastTitle").textContent = title;
+      $("#toastText").textContent = text;
+      t.querySelector(".ico").textContent = ico;
+      t.classList.add("show");
+      clearTimeout(toast._tm);
+      toast._tm = setTimeout(()=> t.classList.remove("show"), 2400);
+    }
+
+    function setStep(n){
+      state.step = n;
+      $$(".step").forEach(s => s.classList.toggle("active", Number(s.dataset.step) === n));
+      chipText.textContent = `шаг ${n} из 5`;
+
+      const her = state.girlName || CONFIG.herName || "любимая";
+
+      if(n === 1){
+        titleBar.textContent = "Валентинка";
+        // subBar.textContent = `${CONFIG.yourName} → ${her}`;
+      } else if(n === 2){
+        titleBar.textContent = `Для ${her}`;
+        subBar.textContent = "твой код доступа";
+      } else if(n === 3){
+        titleBar.textContent = `Для ${her}`;
+        subBar.textContent = "мини-миссия";
+      } else if(n === 4){
+        titleBar.textContent = "Наши моменты";
+        subBar.textContent = `${CONFIG.yourName} × ${her}`;
+      } else if(n === 5){
+        titleBar.textContent = "Главный вопрос";
+        subBar.textContent = "только честно 🙂";
+      }
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+    // ====== Content injection (interests/plans/quotes) ======
+    function renderInterests(){
+      const s = CONFIG.interests
+        .map(x => `• ${x}`)
+        .join(" &nbsp; ");
+      $("#interestsInline").innerHTML = `<span style="display:block; margin-top:6px; color: rgba(255,255,255,.86)">${s}</span>`;
+    }
+
+    function renderPlans(){
+      const box = $("#plansList");
+      box.innerHTML = "";
+      CONFIG.plans.forEach((txt, i) => {
+        const row = document.createElement("div");
+        row.style.display = "flex";
+        row.style.gap = "8px";
+        row.style.alignItems = "flex-start";
+        row.style.padding = "9px 10px";
+        row.style.borderRadius = "16px";
+        row.style.background = "rgba(0,0,0,.16)";
+        row.style.border = "1px solid rgba(255,255,255,.12)";
+        row.style.boxShadow = "inset 0 1px 0 rgba(255,255,255,.04)";
+        row.innerHTML = `
+          <span style="flex:0 0 auto; margin-top:1px;">${i < 3 ? "⭐" : "⭐"}</span>
+          <span style="color: rgba(255,255,255,.86);">${txt}</span>
+        `;
+        row.addEventListener("click", () => {
+          toast("План сохранён", `Когда-нибудь: “${txt}” 🗺️`, "🗺️");
+          burstHearts(10);
+        });
+        box.appendChild(row);
+      });
+    }
+
+    function setQuote(idx){
+      state.quoteIndex = (idx + CONFIG.quotes.length) % CONFIG.quotes.length;
+      $("#quoteText").textContent = CONFIG.quotes[state.quoteIndex];
+    }
+
+    // ====== Step 1 ======
+    $("#girlName").value = CONFIG.herName;
+
+    $("#startBtn").addEventListener("click", () => {
+      const v = $("#girlName").value.trim();
+      state.girlName = v || CONFIG.herName;
+      // applyNames();
+      setStep(2);
+      toast("Поехали", `${state.girlName}, уровень 1 пройден ✅`, "✅");
+    });
+
+    // $("#skipNameBtn").addEventListener("click", () => {
+    //   state.girlName = CONFIG.herName;
+    //   applyNames();
+    //   setStep(2);
+    //   toast("Ок", "Пойдём дальше 💗", "💗");
+    // });
+
+    // function applyNames(){
+    //   const her = state.girlName || CONFIG.herName;
+    //   $("#step2Title").textContent = `${her}, выбери “ключик”, который про тебя`;
+    //   $("#finalTitle").textContent = `${her}, будешь моей валентинкой? 💞`;
+    //   $("#herTag").textContent = her;
+    //   $("#subBar").textContent = `${CONFIG.yourName} → ${her}`;
+    // }
+
+    // ====== Step 2 ======
+    const ansBtns = $$('button[data-ans]');
+    ansBtns.forEach(b => b.addEventListener("click", () => {
+      ansBtns.forEach(x => x.style.filter = "none");
+      b.style.filter = "brightness(1.08)";
+      state.secret = b.dataset.ans;
+      $("#next2").disabled = false;
+
+      const her = state.girlName || CONFIG.herName;
+      toast("Жмякнула на ", `${labelSecret(state.secret)} ✨`, "✨");
+    }));
+
+    function labelSecret(v){
+      const map = {
+        "гречка": "🥣 гречка",
+        "курица": "🍗 курица в кисло-сладком",
+        "искусство": "🎨 искусство руками",
+        "леопард": "🐆 леопардовые оттенки"
+      };
+      return map[v] || v;
+    }
+
+    $("#back2").addEventListener("click", () => setStep(1));
+    $("#next2").addEventListener("click", () => {
+      if(!state.secret) return;
+      setStep(3);
+      const her = state.girlName || CONFIG.herName;
+      toast("Уровень 2", `${her}, ближайшие планы`, "✅");
+    });
+
+    // ====== Step 3 ======
+    const wobble = $("#wobbleHeart");
+    wobble.animate(
+      [{transform:"translateX(0) rotate(0deg)"},{transform:"translateX(2px) rotate(1deg)"},{transform:"translateX(-2px) rotate(-1deg)"},{transform:"translateX(0) rotate(0deg)"}],
+      {duration: 900, iterations: Infinity}
+    );
+
+    const heartBtns = $$('button[data-heart]');
+    heartBtns.forEach(b => b.addEventListener("click", () => {
+      heartBtns.forEach(x => x.style.filter = "none");
+      b.style.filter = "brightness(1.1)";
+      state.heart = b.dataset.heart;
+      $("#next3").disabled = false;
+
+      const hints = {
+        A: "2026 — мы это сделаем. Точно.",
+        B: "Горы будут нашими свидетелями.",
+        C: "Ужин с видом — обязателен.",
+        D: "Путешествия: Москва, Ташкент и дальше."
+      };
+      toast("Сердце выбрано", hints[state.heart] || "❤️", "💗");
+    }));
+
+    $("#back3").addEventListener("click", () => setStep(2));
+    $("#next3").addEventListener("click", () => {
+      if(!state.heart) return;
+      setStep(4);
+      toast("Галерея", "Нажми на фото — будет комплимент 💬", "📸");
+    });
+
+    // ====== Step 4 ======
+    $("#back4").addEventListener("click", () => setStep(3));
+    $("#next4").addEventListener("click", () => setStep(5));
+
+    const imgMe = $("#imgMe");
+    const imgHer = $("#imgHer");
+
+    [imgMe, imgHer].forEach((img, idx) => {
+      img.addEventListener("click", () => {
+        const c = rand(CONFIG.compliments);
+        const her = state.girlName || CONFIG.herName;
+        toast("Комплимент", idx === 1 ? `${her}, ${c}` : c, "💬");
+        burstHearts(22);
+      });
+      img.addEventListener("error", () => {
+        toast("Фото не найдено", "Добавь assets/me.jpg и assets/her.jpg рядом с файлом 🗂️", "🗂️");
+      }, { once:true });
+    });
+
+    $("#nextQuote").addEventListener("click", () => {
+      setQuote(state.quoteIndex + 1);
+      burstHearts(10);
+      toast("Цитата", "Ещё одна — в коллекцию 💬", "💬");
+    });
+
+    $("#surprise").addEventListener("click", () => {
+      const her = state.girlName || CONFIG.herName;
+      const pick = rand(CONFIG.plans);
+      toast("Сюрприз-идея", `${her}, давай: “${pick}” 😌`, "🎁");
+      burstHearts(18);
+    });
+
+    // ====== Step 5 ======
+    $("#yesBtn").addEventListener("click", () => {
+      state.accepted = true;
+      $("#afterYes").style.display = "block";
+      burstHearts(70);
+
+      const her = state.girlName || CONFIG.herName;
+      const quote = CONFIG.quotes[0];
+      const planA = "встретиться в 2026 году";
+      const planB = "сводить тебя в горы";
+
+      toast("Ответ принят", `${her}, теперь ты моя валентинка 💞`, "💞");
+
+      $("#finalText").textContent =
+        `${quote}\n\n` +
+        `И ещё: для кого-то ты тот самый человек, с которым представляют сценарии перед сном.\n` +
+        `Для меня — это ты.\n\n` +
+        `Давай начнём с малого: ${labelSecret(state.secret)} сегодня.\n` +
+        `А дальше — ${planA}, ${planB}, и всё остальное из наших планов.`;
+    });
+
+    $("#maybeBtn").addEventListener("click", () => {
+      toast("Хмм…", rand(CONFIG.maybeTexts), "🙂");
+      $("#yesBtn").animate(
+        [{transform:"scale(1)"},{transform:"scale(1.03)"},{transform:"scale(1)"}],
+        {duration: 420, iterations: 1, easing:"cubic-bezier(.2,.9,.2,1)"}
+      );
+    });
+
+    // “no” runs away
+    const noBtn = $("#noBtn");
+    noBtn.addEventListener("pointerenter", runAway);
+    noBtn.addEventListener("click", runAway);
+
+    function runAway(){
+      const stage = $("#stage");
+      const rect = stage.getBoundingClientRect();
+      const b = noBtn.getBoundingClientRect();
+
+      const pad = 10;
+      const maxX = rect.width - b.width - pad;
+      const maxY = 180;
+      const x = Math.max(pad, Math.min(maxX, Math.random() * maxX));
+      const y = Math.max(pad, Math.min(maxY, Math.random() * maxY));
+
+      noBtn.style.position = "relative";
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+      toast("Не так быстро", rand(CONFIG.noRunTexts), "🙈");
+      burstHearts(10);
+    }
+
+    // Message modal
+    const modal = $("#modal");
+    $("#openMsg").addEventListener("click", () => {
+      modal.classList.add("show");
+      const her = state.girlName || CONFIG.herName;
+
+      const pickPlans = [
+        "встретиться в 2026 году",
+        "сводить тебя в горы",
+        "романтический ужин с видом",
+        "гастротур по Ташкенту",
+        "поехать мне в Москву буйруса в гости тебе"
+      ].filter(Boolean);
+
+      $("#msgArea").value =
+        `${her}, это Дастан. Обожаю твою цитату\n` +
+        `${CONFIG.quotes[0]}\n\n` +
+        `Я хочу сделать с тобой всё, что мы запланировали: ` +
+        `${pickPlans.slice(0,3).join(", ")}…\n\n` +
+        `Главное будь рядом 💗`;
+      $("#msgArea").focus();
+    });
+
+    $("#closeModal").addEventListener("click", () => modal.classList.remove("show"));
+    modal.addEventListener("click", (e) => { if(e.target === modal) modal.classList.remove("show"); });
+
+    $("#copyMsg").addEventListener("click", async () => {
+      const text = $("#msgArea").value.trim();
+      if(!text){ toast("Пусто", "Напиши пару слов 🙂"); return; }
+      try{
+        await navigator.clipboard.writeText(text);
+        toast("Скопировано", "Можно вставить в WhatsApp/Telegram 💬", "✅");
+      }catch{
+        toast("Не получилось", "Скопируй вручную — выдели текст ✍️", "✍️");
+      }
+    });
+
+    $("#shareMsg").addEventListener("click", async () => {
+      const text = $("#msgArea").value.trim();
+      if(!text){ toast("Пусто", "Напиши пару слов 🙂"); return; }
+      if(navigator.share){
+        try{
+          await navigator.share({ text });
+          toast("Отправлено", "Красиво 😌", "📨");
+        }catch{
+          toast("Ок", "Можно отправить вручную 💬", "💬");
+        }
+      }else{
+        toast("Поделиться", "На этом устройстве нет share API — используй копирование ✅", "ℹ️");
+      }
+    });
+
+    $("#restart").addEventListener("click", () => {
+      state.step = 1;
+      state.secret = "";
+      state.heart = "";
+      state.accepted = false;
+      $("#next2").disabled = true;
+      $("#next3").disabled = true;
+      $("#afterYes").style.display = "none";
+      noBtn.style.left = "0px";
+      noBtn.style.top = "0px";
+      $("#girlName").value = CONFIG.herName;
+      state.girlName = CONFIG.herName;
+      // applyNames();
+      setQuote(0);
+      setStep(1);
+      burstHearts(26);
+    });
+
+    // ====== HEART PARTICLES (canvas) ======
+    const canvas = $("#hearts");
+    const ctx = canvas.getContext("2d");
+    const DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    let W=0,H=0;
+
+    function resizeCanvas(){
+      W = Math.floor(window.innerWidth * DPR);
+      H = Math.floor(window.innerHeight * DPR);
+      canvas.width = W;
+      canvas.height = H;
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const particles = [];
+    function heartPath(t){
+      const x = 16 * Math.pow(Math.sin(t),3);
+      const y = -(13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t));
+      return {x,y};
+    }
+
+    function spawnHeart(x, y, boost=1){
+      const size = (8 + Math.random()*10) * DPR * boost;
+      particles.push({
+        x: x * DPR,
+        y: y * DPR,
+        vx: (Math.random()*2 - 1) * 0.45 * DPR,
+        vy: (-1.2 - Math.random()*1.2) * 0.7 * DPR,
+        rot: Math.random()*Math.PI*2,
+        vr: (Math.random()*2 - 1) * 0.03,
+        size,
+        life: 0,
+        ttl: 90 + Math.random()*55,
+        hue: 330 + Math.random()*40,
+        alpha: 0.9
+      });
+    }
+
+    function burstHearts(n=24){
+      if(prefersReduced) return;
+      const cx = window.innerWidth * (0.35 + Math.random()*0.3);
+      const cy = window.innerHeight * (0.25 + Math.random()*0.25);
+      for(let i=0;i<n;i++){
+        spawnHeart(cx + (Math.random()*120-60), cy + (Math.random()*60-30), 1);
+      }
+    }
+
+    let ambientTick = 0;
+
+    function drawHeart(p){
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+
+      const s = p.size;
+      ctx.scale(s/34, s/34);
+
+      ctx.beginPath();
+      for(let i=0;i<=Math.PI*2+0.05;i+=0.1){
+        const pt = heartPath(i);
+        ctx.lineTo(pt.x, pt.y);
+      }
+      ctx.closePath();
+
+      ctx.fillStyle = `hsla(${p.hue}, 95%, 66%, ${p.alpha})`;
+      ctx.shadowColor = `hsla(${p.hue}, 95%, 60%, ${p.alpha*0.65})`;
+      ctx.shadowBlur = 18 * DPR;
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    function tick(){
+      if(!prefersReduced){
+        ambientTick++;
+        if(ambientTick % 18 === 0 && particles.length < 140){
+          spawnHeart(Math.random()*window.innerWidth, window.innerHeight + 10, 0.85);
+        }
+      }
+
+      ctx.clearRect(0,0,W,H);
+
+      for(let i=particles.length-1;i>=0;i--){
+        const p = particles[i];
+        p.life++;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+
+        const t = p.life / p.ttl;
+        p.alpha = Math.max(0, 0.9 * (1 - t));
+        p.vy += 0.008 * DPR;
+
+        if(p.alpha <= 0 || p.y < -80*DPR){
+          particles.splice(i,1);
+          continue;
+        }
+        drawHeart(p);
+      }
+
+      requestAnimationFrame(tick);
+    }
+    tick();
+
+    // ====== Init ======
+    function init(){
+      renderInterests();
+      renderPlans();
+      setQuote(0);
+      // applyNames();
+
+      $("#next2").disabled = true;
+      $("#next3").disabled = true;
+
+      setStep(1);
+      setTimeout(() => burstHearts(28), 260);
+      setTimeout(() => toast("Подсказка", "Нажми “Начать” 💗", "💗"), 1200);
+
+      // Soft auto-rotate quote while on step 4
+      setInterval(() => {
+        if(state.step === 4){
+          setQuote(state.quoteIndex + 1);
+        }
+      }, 6500);
+    }
+    init();
+  </script>
+</body>
+</html>
