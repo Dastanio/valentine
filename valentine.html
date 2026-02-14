@@ -42,6 +42,7 @@
         linear-gradient(180deg, var(--bg1) 0%, var(--bg0) 100%);
       overflow-x:hidden;
       -webkit-tap-highlight-color: transparent;
+      -webkit-text-size-adjust: 100%; /* Safari text zoom quirks */
     }
 
     /* subtle noise */
@@ -84,7 +85,7 @@
     .app{
       position:relative;
       z-index:1;
-      min-height: calc(var(--vh) * 100);
+      min-height: calc(var(--vh) * 100); /* iOS Safari-safe */
       padding: calc(16px + var(--safe-top)) 14px calc(18px + var(--safe-bot));
       display:flex;
       flex-direction:column;
@@ -102,9 +103,13 @@
       border-radius: var(--r2);
       background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.05));
       border: 1px solid var(--stroke);
+
       backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur)); /* Safari */
+
       box-shadow: var(--shadow2);
-      position:sticky;
+      position: -webkit-sticky; /* Safari */
+      position: sticky;
       top: calc(10px + var(--safe-top));
       z-index: 4;
     }
@@ -195,10 +200,15 @@
       border-radius: var(--r2);
       background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.05));
       border: 1px solid rgba(255,255,255,.14);
+
       backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur)); /* Safari */
+
       box-shadow: var(--shadow);
       overflow:hidden;
       padding: 18px 14px 14px;
+      transform: translateZ(0); /* Safari paint stability */
+      -webkit-transform: translateZ(0);
     }
     .stage::before{
       content:"";
@@ -279,10 +289,16 @@
       background: rgba(255,255,255,.08);
       border: 1px solid rgba(255,255,255,.14);
       box-shadow: 0 14px 30px rgba(0,0,0,.22);
+
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px); /* Safari */
+
       transition: transform .12s ease, filter .12s ease, background .12s ease;
       position:relative;
       overflow:hidden;
+
+      touch-action: manipulation; /* Safari tap behavior */
+      -webkit-touch-callout: none;
     }
     .btn:active{ transform: translateY(1px) scale(.99); }
     .btn.primary{
@@ -338,6 +354,8 @@
       outline:none;
       font-size: 14px;
       box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+      -webkit-appearance: none;
+      appearance: none;
     }
     input[type="text"]::placeholder{ color: rgba(255,255,255,.45); }
 
@@ -391,6 +409,9 @@
       display:block;
       filter: saturate(1.04) contrast(1.02);
       transform: scale(1.02);
+      -webkit-transform: scale(1.02);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
     }
     .ph .tag{
       position:absolute;
@@ -401,7 +422,10 @@
       background: rgba(0,0,0,.35);
       border: 1px solid rgba(255,255,255,.16);
       color: rgba(255,255,255,.88);
+
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px); /* Safari */
+
       box-shadow: 0 10px 22px rgba(0,0,0,.22);
     }
     .ph::after{
@@ -454,7 +478,10 @@
       border-radius: 18px;
       background: rgba(12, 7, 18, .72);
       border: 1px solid rgba(255,255,255,.14);
+
       backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px); /* Safari */
+
       box-shadow: var(--shadow2);
       display:flex;
       gap:10px;
@@ -493,7 +520,9 @@
       z-index: 20;
       padding: calc(16px + var(--safe-top)) 14px calc(16px + var(--safe-bot));
       background: rgba(0,0,0,.55);
+
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px); /* Safari */
     }
     .modal.show{ display:flex; }
     .sheet{
@@ -536,6 +565,8 @@
       outline:none;
       font-size: 14px;
       line-height:1.45;
+      -webkit-appearance: none;
+      appearance: none;
     }
 
     /* Accessibility */
@@ -767,15 +798,19 @@
   </div>
 
   <script>
-    // Mobile vh fix
-    const setVh = () => document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+    // ===== Safari/iOS viewport fix (stronger) =====
+    const setVh = () => {
+      const h = (window.visualViewport && window.visualViewport.height) ? window.visualViewport.height : window.innerHeight;
+      document.documentElement.style.setProperty('--vh', `${h * 0.01}px`);
+    };
     setVh();
     window.addEventListener('resize', setVh);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', setVh);
+      window.visualViewport.addEventListener('scroll', setVh);
+    }
 
     // ====== CONFIG ======
-    // 1) Положи фото в папку assets рядом с этим файлом:
-    //    assets/me.jpg  — фото Дастана
-    //    assets/her.jpg — фото Нуры
     const CONFIG = {
       yourName: "Дастан",
       herName: "Нура 💝",
@@ -885,7 +920,12 @@
         subBar.textContent = "только честно 🙂";
       }
 
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      // Safari fallback if smooth scroll is flaky
+      try{
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }catch{
+        window.scrollTo(0,0);
+      }
     }
 
     function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
@@ -934,25 +974,9 @@
     $("#startBtn").addEventListener("click", () => {
       const v = $("#girlName").value.trim();
       state.girlName = v || CONFIG.herName;
-      // applyNames();
       setStep(2);
       toast("Поехали", `${state.girlName}, уровень 1 пройден ✅`, "✅");
     });
-
-    // $("#skipNameBtn").addEventListener("click", () => {
-    //   state.girlName = CONFIG.herName;
-    //   applyNames();
-    //   setStep(2);
-    //   toast("Ок", "Пойдём дальше 💗", "💗");
-    // });
-
-    // function applyNames(){
-    //   const her = state.girlName || CONFIG.herName;
-    //   $("#step2Title").textContent = `${her}, выбери “ключик”, который про тебя`;
-    //   $("#finalTitle").textContent = `${her}, будешь моей валентинкой? 💞`;
-    //   $("#herTag").textContent = her;
-    //   $("#subBar").textContent = `${CONFIG.yourName} → ${her}`;
-    // }
 
     // ====== Step 2 ======
     const ansBtns = $$('button[data-ans]');
@@ -962,7 +986,6 @@
       state.secret = b.dataset.ans;
       $("#next2").disabled = false;
 
-      const her = state.girlName || CONFIG.herName;
       toast("Жмякнула на ", `${labelSecret(state.secret)} ✨`, "✨");
     }));
 
@@ -1162,7 +1185,6 @@
       noBtn.style.top = "0px";
       $("#girlName").value = CONFIG.herName;
       state.girlName = CONFIG.herName;
-      // applyNames();
       setQuote(0);
       setStep(1);
       burstHearts(26);
@@ -1176,14 +1198,16 @@
 
     function resizeCanvas(){
       W = Math.floor(window.innerWidth * DPR);
-      H = Math.floor(window.innerHeight * DPR);
+      H = Math.floor((window.visualViewport && window.visualViewport.height ? window.visualViewport.height : window.innerHeight) * DPR);
       canvas.width = W;
       canvas.height = H;
       canvas.style.width = window.innerWidth + "px";
-      canvas.style.height = window.innerHeight + "px";
+      canvas.style.height = (window.visualViewport && window.visualViewport.height ? window.visualViewport.height : window.innerHeight) + "px";
+      if (ctx && ctx.setTransform) ctx.setTransform(1,0,0,1,0,0); // Safari artifacts after resize
     }
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
+    if (window.visualViewport) window.visualViewport.addEventListener("resize", resizeCanvas);
 
     const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -1214,7 +1238,7 @@
     function burstHearts(n=24){
       if(prefersReduced) return;
       const cx = window.innerWidth * (0.35 + Math.random()*0.3);
-      const cy = window.innerHeight * (0.25 + Math.random()*0.25);
+      const cy = (window.visualViewport && window.visualViewport.height ? window.visualViewport.height : window.innerHeight) * (0.25 + Math.random()*0.25);
       for(let i=0;i<n;i++){
         spawnHeart(cx + (Math.random()*120-60), cy + (Math.random()*60-30), 1);
       }
@@ -1249,7 +1273,7 @@
       if(!prefersReduced){
         ambientTick++;
         if(ambientTick % 18 === 0 && particles.length < 140){
-          spawnHeart(Math.random()*window.innerWidth, window.innerHeight + 10, 0.85);
+          spawnHeart(Math.random()*window.innerWidth, (window.visualViewport && window.visualViewport.height ? window.visualViewport.height : window.innerHeight) + 10, 0.85);
         }
       }
 
@@ -1282,7 +1306,6 @@
       renderInterests();
       renderPlans();
       setQuote(0);
-      // applyNames();
 
       $("#next2").disabled = true;
       $("#next3").disabled = true;
@@ -1291,7 +1314,6 @@
       setTimeout(() => burstHearts(28), 260);
       setTimeout(() => toast("Подсказка", "Нажми “Начать” 💗", "💗"), 1200);
 
-      // Soft auto-rotate quote while on step 4
       setInterval(() => {
         if(state.step === 4){
           setQuote(state.quoteIndex + 1);
