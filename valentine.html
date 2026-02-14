@@ -7,6 +7,17 @@
   <title>💌 Валентинка для Нуры</title>
 
   <style>
+
+    /* Safari blur support */
+.btn, .topbar, .stage, .toast, .modal, .ph .tag{
+  -webkit-backdrop-filter: blur(var(--blur));
+}
+
+/* Фолбэк, если blur вообще не поддерживается */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .btn { background: rgba(255,255,255,.14); } /* чуть плотнее, чтобы не чернели */
+}
+
     :root{
       --bg0:#07040c;
       --bg1:#140a22;
