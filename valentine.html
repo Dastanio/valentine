@@ -614,6 +614,73 @@
       *{ animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior:auto !important; }
       canvas#hearts{ display:none; }
     }
+
+    /* QR block */
+.qrCard{
+  margin: 12px 0 14px;
+  padding: 12px 12px;
+  border-radius: 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: 0 16px 36px rgba(0,0,0,.22);
+
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+}
+
+.qrLeft{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  min-width: 0;
+}
+
+.qrTitle{
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing:.2px;
+  color: rgba(255,255,255,.92);
+}
+
+.qrSub{
+  font-size: 12px;
+  line-height: 1.35;
+  color: rgba(255,255,255,.72);
+}
+
+.qrBox{
+  flex: 0 0 auto;
+  width: 92px;
+  height: 92px;
+  border-radius: 18px;
+  padding: 8px;
+
+  background: rgba(0,0,0,.18);
+  border: 1px solid rgba(255,255,255,.16);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 14px 30px rgba(0,0,0,.18);
+  overflow:hidden;
+
+  display:grid;
+  place-items:center;
+}
+
+.qrImg{
+  width:100%;
+  height:100%;
+  object-fit: contain;
+  display:block;
+  border-radius: 12px;
+}
+
+/* На очень узких экранах */
+@media (max-width: 360px){
+  .qrBox{ width:84px; height:84px; }
+}
   </style>
 </head>
 
@@ -784,7 +851,17 @@
         <p id="finalText">
           «нам и целой жизни не хватит насладиться моментами друг с другом»
         </p>
+        
+<div class="qrCard" id="qrCard">
+  <div class="qrLeft">
+    <div class="qrTitle">Сканнируй с телефона 💌</div>
+    <div class="qrSub">Помню когда первый раз посмотрел, подумал а ведь реально существует же девушка которая увидела во мне другое</div>
+  </div>
 
+  <div class="qrBox">
+    <img src="qr.jpg" alt="QR-код" class="qrImg">
+  </div>
+</div>
         <div class="actions">
           <button class="btn primary" id="yesBtn">ДА 💗</button>
           <button class="btn secondary" id="maybeBtn">Эмм…</button>
